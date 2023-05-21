@@ -106,7 +106,7 @@ jobs:
         with:
           body_path: "GENERATED_RELEASE_NOTES.md"
           tag_name: "v${{ needs.prepare.outputs.VERSION }}"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
         env:
           GITHUB_REPOSITORY: "noaione/youtube-but-better"
           files: |
