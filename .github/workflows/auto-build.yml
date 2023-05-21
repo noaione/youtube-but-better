@@ -2,9 +2,9 @@ name: Auto Build
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   # Midnight UTC build
-  #   - cron: '0 0 * * *'
+  schedule:
+    # Midnight UTC build
+    - cron: '0 0 * * *'
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -100,7 +100,7 @@ jobs:
           GITHUB_GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
           VERSION_BUILD: ${{ needs.prepare.outputs.VERSION }}
           OPTIONS_ROOT: ${{ needs.call-root.outputs.options }}
-          OPTIONS_NON_ROOT: ${{ needs.call-root.outputs.options }}
+          OPTIONS_NON_ROOT: ${{ needs.call-non-root.outputs.options }}
           FILENAME_ROOT: ${{ needs.call-root.outputs.apk }}
           FILENAME_NON_ROOT: ${{ needs.call-non-root.outputs.apk }}
 
