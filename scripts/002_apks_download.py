@@ -26,10 +26,8 @@ def build_url(url: str):
     return url
 
 
-# req = requests.get(YOUTUBE_APK_PAGE, headers={"User-Agent": __UA__})
-
-with open("test.html", "r") as fp:
-    res_page = BeautifulSoup(fp.read(), "html.parser")
+req = requests.get(YOUTUBE_APK_PAGE, headers={"User-Agent": __UA__})
+res_page = BeautifulSoup(req.content, "html.parser")
 
 variants_table = res_page.find("div", {"class": "variants-table"})
 
