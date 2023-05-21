@@ -1,6 +1,6 @@
 # I Heckin' Love YouTube
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/noaione/youtube-but-better/auto-build.yml) [![Release](https://img.shields.io/github/v/release/noaione/youtube-but-better)](https://github.com/noaione/youtube-but-better/releases/latest) ![Download Count](https://img.shields.io/github/downloads/noaione/youtube-but-better/latest/total)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/noaione/youtube-but-better/auto-build.yml)](https://github.com/noaione/youtube-but-better/actions/workflows/auto-build.yml) [![Release](https://img.shields.io/github/v/release/noaione/youtube-but-better)](https://github.com/noaione/youtube-but-better/releases/latest) [![Download Count](https://img.shields.io/github/downloads/noaione/youtube-but-better/latest/total)](https://github.com/noaione/youtube-but-better/releases/latest)
 
 This repository provide an automated build for a certain YouTube client.
 
