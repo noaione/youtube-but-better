@@ -51,6 +51,7 @@ req_patch = requests.patch(
     f"https://api.github.com/gists/{gist_id}",
     headers={
         "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {GITHUB_TOKEN}"
     },
     data=json.dumps({
         "description": "Update Build Versions",
