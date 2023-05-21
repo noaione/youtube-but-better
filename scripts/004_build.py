@@ -1,10 +1,10 @@
 # Builder script
 
+import json
 import os
+import subprocess as sp
 import sys
 from typing import Optional
-import subprocess as sp
-
 
 try:
     version = sys.argv[1]
@@ -43,3 +43,12 @@ print("Running command:")
 print(" ".join(commands))
 print()
 sp.run(commands)
+
+
+print("Done building, setting options for next step!")
+with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
+    with open("options.json", "r") as optfp:
+        js_opts = json.load(optfp)
+
+    dumped_opts = json.dumps(js_opts, ensure_ascii=False)
+    print(f"BUILD_OPTIONS={dumped_opts}", file=fp)

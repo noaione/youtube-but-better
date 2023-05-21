@@ -89,7 +89,6 @@ jobs:
           python3 scripts/004_build.py ${{ steps.latest-compat.outputs.version }}
           mv revanced.apk "${FILENAME}-${{ steps.latest-compat.outputs.version }}.apk"
           # Read the options.json and put it to output
-          echo "BUILD_OPTIONS=$(cat options.json)" >> $GITHUB_OUTPUT
           echo "FINAL_APK=${FILENAME}-${{ steps.latest-compat.outputs.version }}.apk" >> $GITHUB_OUTPUT
 
       - name: Upload APK
