@@ -78,7 +78,7 @@ Based on: **YouTube v{VERSION_BUILD}**
 ## Checksums
 
 | Name | Checksum |
-|:----:|:--------:|
+|------|:--------:|
 """  # noqa
 
 # Check if filename location is kinda fucked?
