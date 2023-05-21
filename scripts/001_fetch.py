@@ -72,10 +72,6 @@ else:
     print(f"Latest compatible version is {latest_compat_version}")
 
 # Set to github output actions
-GITHUB_OUTPUT = os.getenv("GITHUB_OUTPUT")
-# Append the version to the output
 version_string = ".".join(map(str, latest_compat_version))
-if GITHUB_OUTPUT is None:
-    os.environ["GITHUB_OUTPUT"] = f"version={version_string}"
-else:
-    os.environ["GITHUB_OUTPUT"] += f"version={version_string}"
+with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
+    print(f"version={version_string}", file=fp)
