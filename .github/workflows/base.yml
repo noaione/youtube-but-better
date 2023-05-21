@@ -37,6 +37,7 @@ env:
   EXCLUDED_MODULE: ${{ inputs.excluded-module }}
   INCLUDED_MODULE: ${{ inputs.included-module }}
   GITHUB_TOKEN: ${{ secrets.github-token }}
+  FILENAME: ${{ inputs.filename }}
 
 jobs:
   build:
@@ -86,10 +87,10 @@ jobs:
         id: build-thing
         run: |
           python3 scripts/004_build.py ${{ steps.latest-compat.outputs.version }}
-          mv revanced.apk "${{ github.event.inputs.filename }}-${{ steps.latest-compat.outputs.version }}.apk"
+          mv revanced.apk "${FILENAME}-${{ steps.latest-compat.outputs.version }}.apk"
           # Read the options.json and put it to output
           echo "BUILD_OPTIONS=$(cat options.json)" >> $GITHUB_OUTPUT
-          echo "FINAL_APK=${{ github.event.inputs.filename }}-${{ steps.latest-compat.outputs.version }}.apk" >> $GITHUB_OUTPUT
+          echo "FINAL_APK=${FILENAME}-${{ steps.latest-compat.outputs.version }}.apk" >> $GITHUB_OUTPUT
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
