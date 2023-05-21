@@ -30,11 +30,12 @@ if latest_compat is None:
 
 latest_compat_str = ".".join(str(x) for x in latest_compat)
 
+should_run = "true"
 if latest_compat_str in res["versions"]:
     print(f"Version {latest_compat_str} is in the list, skipping build")
-    sys.exit(1)
+    should_run = "false"
 
 print(f"Version {latest_compat_str} is not in the list, building")
 with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
     print(f"VERSION={latest_compat_str}", file=fp)
-sys.exit(0)
+    print(f"SHOULD_RUN={should_run}", file=fp)

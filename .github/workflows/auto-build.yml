@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.check.outputs.VERSION }}
+      SHOULD_RUN: ${{ steps.check.outputs.SHOULD_RUN}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,7 +38,7 @@ jobs:
   # Only continue if prepare step passes
   call-non-root:
     needs: prepare
-    if: success()
+    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true'"
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue"
@@ -45,9 +46,10 @@ jobs:
       filename: "revanced"
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+
   call-root:
     needs: prepare
-    if: success()
+    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true'"
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue,custom-branding-name,microg-support"
@@ -59,7 +61,7 @@ jobs:
   # Only run if both call steps pass
   publish:
     needs: [prepare, call-non-root, call-root]
-    if: success()
+    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true' && success()"
 
     runs-on: ubuntu-latest
     steps:
@@ -109,19 +111,3 @@ jobs:
           files: |
             ${{ needs.call-non-root.outputs.apk }}
             ${{ needs.call-root.outputs.apk }}
-
-  # Mark the overall actions as failed if publish fails
-  # If just the prepare step fails, the workflow will be marked as cancelled
-  finalize:
-    needs: [publish, prepare]
-    runs-on: ubuntu-latest
-    if: always()
-
-    steps:
-      - name: Fail Prepare
-        if: ${{ needs.prepare.outcome != 'success' }}
-        run: exit 0
-
-      - name: Fail Publish
-        if: ${{ needs.publish.outcome != 'success' }}
-        run: exit 1
