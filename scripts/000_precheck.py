@@ -35,4 +35,6 @@ if latest_compat_str in res["versions"]:
     sys.exit(1)
 
 print(f"Version {latest_compat_str} is not in the list, building")
+with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
+    print(f"VERSION={latest_compat_str}", file=fp)
 sys.exit(0)
