@@ -105,5 +105,6 @@ for option in option_non_root:
     BASE_MARKDOWN += f"- `{option}`\n"
 
 # Write file
+print(BASE_MARKDOWN)
 with open("GENERATED_RELEASE_NOTES.md", "w") as fp:
     fp.write(BASE_MARKDOWN)
