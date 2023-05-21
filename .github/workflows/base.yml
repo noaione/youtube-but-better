@@ -53,6 +53,7 @@ jobs:
           egress-policy: block
           allowed-endpoints: >
             api.azul.com:443
+            cdn.azul.com:443
             api.github.com:443
             files.pythonhosted.org:443
             github.com:443
