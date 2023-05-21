@@ -57,7 +57,7 @@ req_patch = requests.patch(
         "Authorization": f"Bearer {GITHUB_TOKEN}"
     },
     data=json.dumps({
-        "description": "Update Build Versions",
+        "description": "ReVanced Auto Build — Version Build List",
         "files": {
             "revanced-build.json": {
                 "content": json.dumps(res_json, indent=4)
