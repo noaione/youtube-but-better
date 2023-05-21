@@ -28,9 +28,11 @@ if latest_compat is None:
     print("No compatible version found")
     sys.exit(1)
 
-if latest_compat in res["versions"]:
-    print(f"Version {latest_compat} is in the list, skipping build")
+latest_compat_str = ".".join(str(x) for x in latest_compat)
+
+if latest_compat_str in res["versions"]:
+    print(f"Version {latest_compat_str} is in the list, skipping build")
     sys.exit(1)
 
-print(f"Version {latest_compat} is not in the list, building")
+print(f"Version {latest_compat_str} is not in the list, building")
 sys.exit(0)
