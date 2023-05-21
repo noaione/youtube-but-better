@@ -11,8 +11,8 @@ import requests
 REPOSITORY = "inotia00"
 GITHUB_TOKEN = os.getenv("GITHUB_GIST_TOKEN")
 VERSION_BUILD = os.getenv("VERSION_BUILD")
-# OPTIONS_NON_ROOT = os.getenv("OPTIONS_NON_ROOT")
-# OPTIONS_ROOT = os.getenv("OPTIONS_ROOT")
+OPTIONS_NON_ROOT = os.getenv("OPTIONS_NON_ROOT")
+OPTIONS_ROOT = os.getenv("OPTIONS_ROOT")
 FILENAME_NON_ROOT = os.getenv("FILENAME_NON_ROOT")
 FILENAME_ROOT = os.getenv("FILENAME_ROOT")
 
@@ -22,12 +22,12 @@ if GITHUB_TOKEN is None:
 if VERSION_BUILD is None:
     print("VERSION_BUILD is not set")
     sys.exit(1)
-# if OPTIONS_NON_ROOT is None:
-#     print("OPTIONS_NON_ROOT is not set")
-#     sys.exit(1)
-# if OPTIONS_ROOT is None:
-#     print("OPTIONS_ROOT is not set")
-#     sys.exit(1)
+if OPTIONS_NON_ROOT is None:
+    print("OPTIONS_NON_ROOT is not set")
+    sys.exit(1)
+if OPTIONS_ROOT is None:
+    print("OPTIONS_ROOT is not set")
+    sys.exit(1)
 if FILENAME_NON_ROOT is None:
     print("FILENAME_NON_ROOT is not set")
     sys.exit(1)
@@ -83,12 +83,26 @@ Based on: **YouTube v{VERSION_BUILD}**
 # sha256 sum the files
 checksums = []
 for filename in (FILENAME_NON_ROOT, FILENAME_ROOT):
-    with open(filename, "rb") as fp:
+    with open(f"{filename}/{filename}", "rb") as fp:  # weird way, I know
         checksums.append((filename, hashlib.sha256(fp.read()).hexdigest()))
 
 # Append to markdown
 for filename, checksum in checksums:
     BASE_MARKDOWN += f"| {filename} | `{checksum}` |\n"
+
+BASE_MARKDOWN += "\n"
+option_root = json.loads(OPTIONS_ROOT)
+option_non_root = json.loads(OPTIONS_NON_ROOT)
+
+# Append options
+BASE_MARKDOWN += "## Options\n\n"
+BASE_MARKDOWN += "### Root\n\n"
+for option in option_root:
+    BASE_MARKDOWN += f"- `{option}`\n"
+BASE_MARKDOWN += "\n"
+BASE_MARKDOWN += "### Non-Root\n\n"
+for option in option_non_root:
+    BASE_MARKDOWN += f"- `{option}`\n"
 
 # Write file
 with open("GENERATED_RELEASE_NOTES.md", "w") as fp:
