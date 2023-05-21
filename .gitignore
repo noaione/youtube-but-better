@@ -1,0 +1,19 @@
+.venv/
+env/
+venv/
+.env
+
+# Some more shit
+.env.local
+.env.production
+
+# Python
+__pycache__
+
+*.html
+*.apk
+*.keystore
+revanced-*
+
+# Revanced
+options.json

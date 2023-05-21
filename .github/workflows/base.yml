@@ -1,0 +1,97 @@
+# this script will be called on auto-build.yml
+
+on:
+  workflow_call:
+    inputs:
+      filename:
+        required: true
+        description: "The final filename you wanted"
+        type: string
+      excluded-module:
+        required: false
+        description: "Module that you don't want to include when building, separated by comma"
+        type: string
+      included-module:
+        required: false
+        description: "Module that you want to force include when building, separated by comma"
+        type: string
+      base-repository:
+        required: false
+        description: "The default organization that will be used to make the build"
+        default: "inotia00"
+        type: string
+    secrets:
+      github-token:
+        required: true
+        description: "Github token to access repository and bypass limitation"
+    outputs:
+      options:
+        description: "The options that used to build the APK"
+        value: ${{ jobs.build.outputs.build-options }}
+      apk:
+        description: "The final APK that will be uploaded"
+        value: ${{ jobs.build.outputs.final-apk }}
+
+env:
+  BASE_REPOSITORY: ${{ github.event.inputs.base-repository }}
+  EXCLUDED_MODULE: ${{ github.event.inputs.excluded-module }}
+  INCLUDED_MODULE: ${{ github.event.inputs.included-module }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      build-options: ${{ steps.build-thing.outputs.BUILD_OPTIONS }}
+      final-apk: ${{ steps.build-thing.outputs.FINAL_APK }}
+    steps:
+      - name: Audit Runner
+        uses: step-security/harden-runner@128a63446a954579617e875aaab7d2978154e969 # v2.4.0
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Install Requirements
+        run: |
+          pip3 install -r requirements.txt
+
+      - name: Get Latest Compatible Version
+        id: latest-compat
+        run: |
+          python3 scripts/001_fetch.py
+
+      - name: Get APKs
+        run: |
+          python3 scripts/002_apks_download.py ${{ steps.latest-compat.outputs.version }}
+
+      - name: Get Tooling
+        run: |
+          python3 scripts/003_assets_download.py
+
+      - name: Run build
+        id: build-thing
+        run: |
+          python3 scripts/004_build.py ${{ steps.latest-compat.outputs.version }}
+          mv revanced.apk "${{ github.event.inputs.filename }}-${{ steps.latest-compat.outputs.version }}.apk"
+          # Read the options.json and put it to output
+          echo "BUILD_OPTIONS=$(cat options.json)" >> $GITHUB_OUTPUT
+          echo "FINAL_APK=${{ github.event.inputs.filename }}-${{ steps.latest-compat.outputs.version }}.apk" >> $GITHUB_OUTPUT
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.build-thing.outputs.FINAL_APK }}
+          path: ${{ steps.build-thing.outputs.FINAL_APK }}

@@ -1,0 +1,25 @@
+name: Auto Build
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # Midnight UTC build
+  #   - cron: '0 0 * * *'
+
+jobs:
+  call-non-root:
+    uses: ./.github/workflows/base.yml
+    with:
+      excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue"
+      included-module: "custom-branding-name,microg-support,theme,materialyou"
+      filename: "revanced"
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+  call-root:
+    uses: ./.github/workflows/base.yml
+    with:
+      excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue,custom-branding-name,microg-support"
+      included-module: "theme,materialyou"
+      filename: "revanced-root"
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
