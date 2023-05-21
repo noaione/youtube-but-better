@@ -118,10 +118,10 @@ jobs:
     if: always()
 
     steps:
-      - name: Fail Publish
-        if: ${{ needs.publish.outcome != 'success' }}
-        run: exit 1
-
       - name: Fail Prepare
         if: ${{ needs.prepare.outcome != 'success' }}
         run: exit 0
+
+      - name: Fail Publish
+        if: ${{ needs.publish.outcome != 'success' }}
+        run: exit 1
