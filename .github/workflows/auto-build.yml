@@ -6,8 +6,38 @@ on:
   #   # Midnight UTC build
   #   - cron: '0 0 * * *'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
+  # Prepare step, check if we need to actually build
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.check.outputs.VERSION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Install Requirements
+        run: |
+          pip3 install -r requirements.txt
+
+      - name: Run Check
+        id: check
+        run: |
+          python3 scripts/000_precheck.py
+
+  # Only continue if prepare step passes
   call-non-root:
+    needs: prepare
+    if: success()
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue"
@@ -16,6 +46,8 @@ jobs:
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
   call-root:
+    needs: prepare
+    if: success()
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue,custom-branding-name,microg-support"
@@ -23,3 +55,53 @@ jobs:
       filename: "revanced-root"
     secrets:
       github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # Only run if both call steps pass
+  publish:
+    needs: [prepare, call-non-root, call-root]
+    if: success()
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+
+      - name: Download Root
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.call-root.outputs.apk }}
+          path: ${{ needs.call-root.outputs.apk }}
+
+      - name: Download Non-Root
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ needs.call-non-root.outputs.apk }}
+          path: ${{ needs.call-non-root.outputs.apk }}
+
+      - name: Prepare
+        run: |
+          python3 scripts/005_make_release.py
+        env:
+          GITHUB_GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          VERSION_BUILD: ${{ needs.prepare.outputs.VERSION }}
+          # OPTIONS_ROOT: ${{ needs.call-root.outputs.options }}
+          # OPTIONS_NON_ROOT: ${{ needs.call-root.outputs.options }}
+          FILENAME_ROOT: ${{ needs.call-root.outputs.apk }}
+          FILENAME_NON_ROOT: ${{ needs.call-non-root.outputs.apk }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          body_path: "GENERATED_RELEASE_NOTES.md"
+          tag_name: "v${{ needs.prepare.outputs.VERSION }}"
+        env:
+          GITHUB_REPOSITORY: "noaione/youtube-but-better"
+          files: |
+            ${{ needs.call-non-root.outputs.apk }}
+            ${{ needs.call-root.outputs.apk }}
