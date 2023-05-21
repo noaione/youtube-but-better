@@ -33,9 +33,9 @@ on:
         value: ${{ jobs.build.outputs.final-apk }}
 
 env:
-  BASE_REPOSITORY: ${{ github.event.inputs.base-repository }}
-  EXCLUDED_MODULE: ${{ github.event.inputs.excluded-module }}
-  INCLUDED_MODULE: ${{ github.event.inputs.included-module }}
+  BASE_REPOSITORY: ${{ inputs.base-repository }}
+  EXCLUDED_MODULE: ${{ inputs.excluded-module }}
+  INCLUDED_MODULE: ${{ inputs.included-module }}
   GITHUB_TOKEN: ${{ secrets.github-token }}
 
 jobs:
