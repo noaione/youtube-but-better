@@ -9,6 +9,9 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+permissions:
+  contents: write
+
 jobs:
   # Prepare step, check if we need to actually build
   prepare:
@@ -107,8 +110,6 @@ jobs:
           body_path: "GENERATED_RELEASE_NOTES.md"
           tag_name: "v${{ needs.prepare.outputs.VERSION }}"
           token: ${{ secrets.RELEASE_TOKEN }}
-        env:
-          GITHUB_REPOSITORY: "noaione/youtube-but-better"
           files: |
             ${{ needs.call-non-root.outputs.apk }}
             ${{ needs.call-root.outputs.apk }}
