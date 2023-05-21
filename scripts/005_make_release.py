@@ -5,9 +5,12 @@ import os
 import sys
 import json
 import hashlib
+from pathlib import Path
 
 import requests
 
+
+CWD = Path.cwd()
 REPOSITORY = "inotia00"
 GITHUB_TOKEN = os.getenv("GITHUB_GIST_TOKEN")
 VERSION_BUILD = os.getenv("VERSION_BUILD")
@@ -80,10 +83,24 @@ Based on: **YouTube v{VERSION_BUILD}**
 |:----:|:--------:|
 """  # noqa
 
+# Check if filename location is kinda fucked?
+for filename in (FILENAME_NON_ROOT, FILENAME_ROOT):
+    path_test = CWD / filename
+    if not path_test.is_file():
+        path_act = path_test / filename
+        if not path_act.is_file():
+            print(f"Unable to actually found the file??? ({path_act})")
+            sys.exit(1)
+        print(f"Rewiring {path_act} to {path_test}")
+        path_fin = CWD / f"{filename}.temp"
+        path_act.rename(path_fin)
+        path_test.rmdir()
+        path_fin.rename(CWD / filename)
+
 # sha256 sum the files
 checksums = []
 for filename in (FILENAME_NON_ROOT, FILENAME_ROOT):
-    with open(f"{filename}/{filename}", "rb") as fp:  # weird way, I know
+    with open(filename, "rb") as fp:  # weird way, I know
         checksums.append((filename, hashlib.sha256(fp.read()).hexdigest()))
 
 # Append to markdown
