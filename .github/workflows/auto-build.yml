@@ -72,6 +72,10 @@ jobs:
           python-version: '3.9'
           cache: 'pip'
 
+      - name: Install Requirements
+        run: |
+          pip3 install -r requirements.txt
+
       - name: Download Root
         uses: actions/download-artifact@v3
         with:
