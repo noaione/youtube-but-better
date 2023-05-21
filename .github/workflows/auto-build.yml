@@ -37,8 +37,8 @@ jobs:
 
   # Only continue if prepare step passes
   call-non-root:
-    needs: prepare
-    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true'"
+    needs: [prepare]
+    if: needs.prepare.outputs.SHOULD_RUN == 'true'
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue"
@@ -48,8 +48,8 @@ jobs:
       github-token: ${{ secrets.GITHUB_TOKEN }}
 
   call-root:
-    needs: prepare
-    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true'"
+    needs: [prepare]
+    if: needs.prepare.outputs.SHOULD_RUN == 'true'
     uses: ./.github/workflows/base.yml
     with:
       excluded-module: "custom-branding-icon-afn-red,custom-branding-icon-red,custom-branding-icon-blue,custom-branding-icon-revancify-blue,custom-branding-name,microg-support"
@@ -61,7 +61,7 @@ jobs:
   # Only run if both call steps pass
   publish:
     needs: [prepare, call-non-root, call-root]
-    if: "${{ needs.prepare.outputs.SHOULD_RUN }} == 'true' && success()"
+    if: success()
 
     runs-on: ubuntu-latest
     steps:
@@ -106,6 +106,7 @@ jobs:
         with:
           body_path: "GENERATED_RELEASE_NOTES.md"
           tag_name: "v${{ needs.prepare.outputs.VERSION }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
         env:
           GITHUB_REPOSITORY: "noaione/youtube-but-better"
           files: |

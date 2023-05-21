@@ -34,8 +34,8 @@ should_run = "true"
 if latest_compat_str in res["versions"]:
     print(f"Version {latest_compat_str} is in the list, skipping build")
     should_run = "false"
-
-print(f"Version {latest_compat_str} is not in the list, building")
+else:
+    print(f"Version {latest_compat_str} is not in the list, building")
 with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
     print(f"VERSION={latest_compat_str}", file=fp)
     print(f"SHOULD_RUN={should_run}", file=fp)
