@@ -36,6 +36,7 @@ env:
   BASE_REPOSITORY: ${{ github.event.inputs.base-repository }}
   EXCLUDED_MODULE: ${{ github.event.inputs.excluded-module }}
   INCLUDED_MODULE: ${{ github.event.inputs.included-module }}
+  GITHUB_TOKEN: ${{ secrets.github-token }}
 
 jobs:
   build:
