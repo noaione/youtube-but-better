@@ -109,3 +109,19 @@ jobs:
           files: |
             ${{ needs.call-non-root.outputs.apk }}
             ${{ needs.call-root.outputs.apk }}
+
+  # Mark the overall actions as failed if publish fails
+  # If just the prepare step fails, the workflow will be marked as cancelled
+  finalize:
+    needs: [publish, prepare]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Fail Publish
+        if: ${{ needs.publish.outcome != 'success' }}
+        run: exit 1
+
+      - name: Fail Prepare
+        if: ${{ needs.prepare.outcome != 'success' }}
+        run: exit 0
