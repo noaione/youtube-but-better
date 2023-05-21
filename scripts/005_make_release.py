@@ -67,8 +67,8 @@ req_patch.raise_for_status()
 
 BASE_MARKDOWN = f"""# ReVanced Auto Build
 
-This is an automated build for ReVanced, this build is not official and not supported by the ReVanced Team.<br />
-This build is based on [inotia00](https://github.com/inotia00/) version
+This is an automated build for ReVanced, this build is not official and not supported by the ReVanced Team.
+This build is based on [inotia00](https://github.com/inotia00/) version.
 
 Based on: **YouTube v{VERSION_BUILD}**
 
