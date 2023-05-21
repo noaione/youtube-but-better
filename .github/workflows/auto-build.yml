@@ -109,6 +109,7 @@ jobs:
         with:
           body_path: "GENERATED_RELEASE_NOTES.md"
           tag_name: "v${{ needs.prepare.outputs.VERSION }}"
+          name: "ReVanced Auto Build v${{ needs.prepare.outputs.VERSION }}"
           token: ${{ secrets.RELEASE_TOKEN }}
           files: |
             ${{ needs.call-non-root.outputs.apk }}
