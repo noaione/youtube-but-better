@@ -46,10 +46,20 @@ jobs:
       build-options: ${{ steps.build-thing.outputs.BUILD_OPTIONS }}
       final-apk: ${{ steps.build-thing.outputs.FINAL_APK }}
     steps:
-      - name: Audit Runner
+      - name: Harden Runner
         uses: step-security/harden-runner@128a63446a954579617e875aaab7d2978154e969 # v2.4.0
         with:
-          egress-policy: audit
+          disable-sudo: true
+          egress-policy: block
+          allowed-endpoints: >
+            api.azul.com:443
+            api.github.com:443
+            files.pythonhosted.org:443
+            github.com:443
+            objects.githubusercontent.com:443
+            pypi.org:443
+            raw.githubusercontent.com:443
+            www.apkmirror.com:443
 
       - name: Checkout
         uses: actions/checkout@v3
