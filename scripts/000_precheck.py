@@ -6,11 +6,12 @@ import sys
 
 import requests
 
-from rv_common import get_latest_compatible_version
+from rv_common import get_latest_compatible_version, parse_as_bool
 
 REPOSITORY = "inotia00"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-FORCE_RUN = os.getenv("FORCE_RUN", "false") == "true"
+FORCE_RUN = parse_as_bool(os.getenv("FORCE_BUILD", "false"))
+print(f"Force run? {FORCE_RUN!r}")
 
 if GITHUB_TOKEN is None:
     print("GITHUB_TOKEN is not set")

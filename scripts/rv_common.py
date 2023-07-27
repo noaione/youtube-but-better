@@ -1,3 +1,4 @@
+from typing import Any
 import requests
 
 API_URL = "https://api.github.com"
@@ -47,3 +48,14 @@ def get_latest_compatible_version(base_repo: str, github_token: str):
                 latest_compat_version = versions_splits[-1]
 
     return latest_compat_version, actual_latest_compat
+
+
+def parse_as_bool(value: Any):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in ["true", "1", "yes", "y", "t"]
+    try:
+        return bool(value)
+    except Exception:
+        return False
