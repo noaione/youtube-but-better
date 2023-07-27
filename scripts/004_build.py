@@ -46,18 +46,24 @@ print()
 applied_options: List[str] = []
 # Intercept subprocess output
 start_intercepting = False
-with sp.Popen(commands, stdout=sp.PIPE, stderr=sp.PIPE, bufsize=1, universal_newlines=True) as p:
+with sp.Popen(
+    commands, stdout=sp.PIPE, stderr=sp.PIPE, bufsize=1, universal_newlines=True
+) as p:
     for line in p.stdout:
         print(line, end="")
         if line.startswith("INFO: "):
-            if "decoding resource" in line.lower():
+            if "executing patches" in line.lower():
                 start_intercepting = True
                 continue
-            if "compiling" in line.lower():
+            if start_intercepting and "compiling resources" in line.lower():
                 start_intercepting = False
             if start_intercepting:
-                strip_line = line.strip().replace("INFO: ", "").split(" ", 1)
-                applied_options.append(strip_line[0])
+                module_name, run_info = line.strip().replace(
+                    "INFO: ", ""
+                ).rsplit(" ", 1)
+                is_success = "succeeded" == run_info
+                if is_success:
+                    applied_options.append(module_name.lower().replace(" ", "-"))
 
 print(f"Options: {applied_options!r}")
 

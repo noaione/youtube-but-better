@@ -85,7 +85,9 @@ print()
 print("Downloading patches...")
 download_target(patches_download["browser_download_url"], "revanced-patches.jar")
 print("Downloading integrations...")
-download_target(integrations_download["browser_download_url"], "revanced-integrations.apk")
+download_target(
+    integrations_download["browser_download_url"], "revanced-integrations.apk"
+)
 print("Downloading CLI...")
 download_target(cli_download["browser_download_url"], "revanced-cli.jar")
 print("Done!")
