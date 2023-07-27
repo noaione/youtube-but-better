@@ -2,6 +2,11 @@ name: Auto Build
 
 on:
   workflow_dispatch:
+    inputs:
+      forceBuild:
+        description: 'Force build without checking for existing build'
+        required: false
+        type: boolean
   schedule:
     # Midnight UTC build
     - cron: '0 0 * * *'
@@ -18,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       VERSION: ${{ steps.check.outputs.VERSION }}
+      VERSION_TAG: ${{ steps.check.outputs.VERSION_TAG }}
       SHOULD_RUN: ${{ steps.check.outputs.SHOULD_RUN}}
     steps:
       - name: Checkout
@@ -35,6 +41,8 @@ jobs:
 
       - name: Run Check
         id: check
+        env:
+          FORCE_BUILD: ${{ github.event.inputs.forceBuild }}
         run: |
           python3 scripts/000_precheck.py
 
@@ -108,7 +116,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body_path: "GENERATED_RELEASE_NOTES.md"
-          tag_name: "v${{ needs.prepare.outputs.VERSION }}"
+          tag_name: "v${{ needs.prepare.outputs.VERSION_TAG }}"
           name: "ReVanced Auto Build v${{ needs.prepare.outputs.VERSION }}"
           token: ${{ secrets.RELEASE_TOKEN }}
           files: |

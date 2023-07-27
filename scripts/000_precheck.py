@@ -10,6 +10,7 @@ from rv_common import get_latest_compatible_version
 
 REPOSITORY = "inotia00"
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+FORCE_RUN = os.getenv("FORCE_RUN", "false") == "true"
 
 if GITHUB_TOKEN is None:
     print("GITHUB_TOKEN is not set")
@@ -29,13 +30,19 @@ if latest_compat is None:
     sys.exit(1)
 
 latest_compat_str = ".".join(str(x) for x in latest_compat)
+# Count how many occurence this version is in the list
+counted_versions = res["versions"].count(latest_compat_str)
+additional_tag = f"-{counted_versions - 1}" if (counted_versions - 1) > 0 else ""
+
+compat_tag_version = f"{latest_compat_str}{additional_tag}"
 
 should_run = "true"
-if latest_compat_str in res["versions"]:
+if latest_compat_str in res["versions"] and not FORCE_RUN:
     print(f"Version {latest_compat_str} is in the list, skipping build")
     should_run = "false"
 else:
     print(f"Version {latest_compat_str} is not in the list, building")
 with open(os.environ["GITHUB_OUTPUT"], "a") as fp:
     print(f"VERSION={latest_compat_str}", file=fp)
+    print(f"VERSION_TAG={compat_tag_version}", file=fp)
     print(f"SHOULD_RUN={should_run}", file=fp)
