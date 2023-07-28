@@ -20,3 +20,11 @@ If you use non-root version, you will need:
 - https://github.com/inotia00/VancedMicroG/releases
 
 If you use rooted version, use `adb` to install the package, make sure you install whatever YouTube version that you want to patch with this version.
+
+## Verifying
+
+To make sure the APK's is not tampered by this repository author, each automated build will have a checksum section which are SHA256 hash of the APKs files to make sure it has not been tampered in one way or another.
+
+You can also verify the build code in the [scripts](https://github.com/noaione/youtube-but-better/tree/master/scripts) folder
+
+If somehow the releases part has been tampered, you can view the [Actions](https://github.com/noaione/youtube-but-better/actions/workflows/auto-build.yml) and see the latest successful release build and see the step summary which should have an unmodified checksum.
