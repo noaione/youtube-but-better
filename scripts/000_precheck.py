@@ -33,7 +33,7 @@ if latest_compat is None:
 latest_compat_str = ".".join(str(x) for x in latest_compat)
 # Count how many occurence this version is in the list
 counted_versions = res["versions"].count(latest_compat_str)
-additional_tag = f"-{counted_versions - 1}" if (counted_versions - 1) > 0 else ""
+additional_tag = f"-{counted_versions}" if counted_versions > 0 else ""
 
 compat_tag_version = f"{latest_compat_str}{additional_tag}"
 
