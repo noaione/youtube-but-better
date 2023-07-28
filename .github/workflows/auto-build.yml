@@ -112,6 +112,11 @@ jobs:
           FILENAME_ROOT: ${{ needs.call-root.outputs.apk }}
           FILENAME_NON_ROOT: ${{ needs.call-non-root.outputs.apk }}
 
+      - name: Summary
+        run: |
+          echo "# Build Summary" > $GITHUB_STEP_SUMMARY
+          cat GENERATED_RELEASE_NOTES.md >> $GITHUB_STEP_SUMMARY
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
