@@ -25,8 +25,7 @@ EXCLUDED_MODULES = parse_module(os.getenv("EXCLUDED_MODULE"))
 INCLUDED_MODULES = parse_module(os.getenv("INCLUDED_MODULE"))
 
 commands = [
-    "java", "-jar", "revanced-cli.jar",
-    "-a", f"youtube-{version}.apk",
+    "java", "-jar", "revanced-cli.jar", "patch",
     "-c", "-o", "revanced.apk",
     "-m", "revanced-integrations.apk",
     "-b", "revanced-patches.jar",
@@ -38,6 +37,8 @@ for module in EXCLUDED_MODULES:
 for module in INCLUDED_MODULES:
     commands.append("-i")
     commands.append(module)
+
+commands.append(f"youtube-{version}.apk")
 
 print("Running command:")
 print(" ".join(commands))
@@ -56,6 +57,8 @@ with sp.Popen(
                 start_intercepting = True
                 continue
             if start_intercepting and "compiling resources" in line.lower():
+                start_intercepting = False
+            if start_intercepting and "compiling modified dex" in line.lower():
                 start_intercepting = False
             if start_intercepting:
                 module_name, run_info = line.strip().replace(

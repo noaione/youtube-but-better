@@ -61,7 +61,6 @@ jobs:
             pypi.org:443
             raw.githubusercontent.com:443
             *.apkmirror.com:443
-            actions.githubusercontent.com:443
             *.actions.githubusercontent.com:443
 
       - name: Checkout
